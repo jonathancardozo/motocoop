@@ -43,6 +43,13 @@ services:
     environment:
       - SERVER_URL=http://localhost:8080
       - AUTHENTICATION_API_KEY=motocoop_evolution_key_change_me
+      - DATABASE_ENABLED=true
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://motocoop_user:motocoop_password@postgres:5432/motocoop
+      - DATABASE_CONNECTION_CLIENT_NAME=motocoop_evolution
+      - REDIS_ENABLED=true
+      - REDIS_URI=redis://redis:6379
+      - REDIS_PREFIX=motocoop
       - STORE_MESSAGES=true
       - STORE_CONTACTS=true
       - CLEAN_STORE_CLEANING_INTERVAL=7200
@@ -53,8 +60,10 @@ services:
     volumes:
       - evolution_data:/evolution/instances
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   # API FastAPI (aplicação principal)
   api:
