@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # PostgreSQL com PostGIS
+  postgres:
+    image: postgis/postgis:15-3.4
+    container_name: motocoop-postgres
+    environment:
+      POSTGRES_DB: motocoop
+      POSTGRES_USER: motocoop_user
+      POSTGRES_PASSWORD: motocoop_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U motocoop_user -d motocoop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: motocoop-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Evolution API (WhatsApp)
+  evolution-api:
+    image: atendai/evolution-api:latest
+    container_name: motocoop-evolution-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_URL=http://localhost:8080
+      - AUTHENTICATION_API_KEY=motocoop_evolution_key_change_me
+      - STORE_MESSAGES=true
+      - STORE_CONTACTS=true
+      - CLEAN_STORE_CLEANING_INTERVAL=7200
+      - CLEAN_STORE_MESSAGES=true
+      - CLEAN_STORE_MESSAGE_UP_TO=true
+      - CLEAN_STORE_CONTACTS=true
+      - CLEAN_STORE_CONTACTS_UP_TO=true
+    volumes:
+      - evolution_data:/evolution/instances
+    depends_on:
+      - postgres
+      - redis
+
+  # API FastAPI (aplicação principal)
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: motocoop-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql+asyncpg://motocoop_user:motocoop_password@postgres:5432/motocoop
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - EVOLUTION_API_URL=http://evolution-api:8080
+      - EVOLUTION_API_KEY=motocoop_evolution_key_change_me
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn src.presentation.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
+  redis_data:
+  evolution_data:
