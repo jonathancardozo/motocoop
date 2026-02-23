@@ -67,7 +67,7 @@ O sistema registra para cada corrida:
 ## 🛠️ Stack Tecnológico
 
 ### Core
-- **Python 3.11+** - Linguagem principal
+- **Python 3.11+** - Linguagem principal (recomendado 3.11 ou 3.12)
 - **FastAPI** - Framework web async, alto desempenho, OpenAPI automático
 - **Poetry** - Gerenciamento de dependências e ambientes virtuais
 - **Pydantic 2.x** - Validação de dados e serialização

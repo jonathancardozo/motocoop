@@ -2,28 +2,62 @@
 
 ## 🚀 Setup Inicial
 
+### 0. Pré-requisitos
+
+**Python 3.11+ Recomendado**
+- Baixe de: https://www.python.org/downloads/
+- ⚠️ **Importante**: Durante instalação, marque "Add Python to PATH"
+- Evite Python da Microsoft Store (causa problemas com Poetry)
+
+**Verificar versões disponíveis:**
+```powershell
+py --list
+# Deve mostrar Python 3.11 ou superior
+```
+
 ### 1. Instalar Poetry
 
 ```powershell
-# Windows (PowerShell)
-(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+# Instalar Poetry usando Python 3.11
+py -3.11 -m pip install --user poetry
+
+# Verificar instalação
+py -3.11 -m poetry --version
 ```
 
-### 2. Instalar Dependências
+**Adicionar Poetry ao PATH (Opcional, mas recomendado):**
+```powershell
+# Executar PowerShell como Administrador
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:APPDATA\Python\Python311\Scripts", "User")
+
+# Fechar e reabrir PowerShell, depois testar:
+poetry --version
+```
+
+### 2. Configurar Projeto com Python 3.11
 
 ```powershell
+# Navegar até o diretório do projeto
+cd C:\projetos-pessoais-software\motocoop
+
+# Configurar Poetry para usar Python 3.11
+poetry env use 3.11
+
 # Instalar dependências do projeto
 poetry install
+```
 
-# Ativar o ambiente virtual
-poetry shell
+**Se Poetry não estiver no PATH, use:**
+```powershell
+& "$env:APPDATA\Python\Python311\Scripts\poetry.exe" env use 3.11
+& "$env:APPDATA\Python\Python311\Scripts\poetry.exe" install
 ```
 
 ### 3. Configurar Variáveis de Ambiente
 
 ```powershell
 # Copiar exemplo de configuração
-cp .env.example .env
+copy .env.example .env
 
 # Editar .env com suas configurações
 notepad .env
@@ -49,8 +83,11 @@ poetry run python scripts/init_db.py
 ### 6. Executar a API
 
 ```powershell
-# Modo desenvolvimento com auto-reload
+# Se Poetry está no PATH:
 poetry run uvicorn src.presentation.api.main:app --reload --host 0.0.0.0 --port 8000
+
+# Se Poetry NÃO está no PATH (Windows):
+& "$env:APPDATA\Python\Python311\Scripts\poetry.exe" run uvicorn src.presentation.api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 A API estará disponível em:
@@ -109,9 +146,7 @@ docker-compose down -v
 - **Evolution API**: http://localhost:8080
 - **PostgreSQL**: localhost:5432
 - **Redis**: localhost:6379
-
-## 🔧 Comandos Úteis
-
+**Se Poetry está no PATH:**
 ```powershell
 # Adicionar nova dependência
 poetry add nome-do-pacote
@@ -127,13 +162,50 @@ poetry show
 
 # Executar script Python
 poetry run python seu_script.py
+
+# Entrar no shell do ambiente virtual
+poetry shell
 ```
 
-## 📝 Próximos Passos
+**Se Poetry NÃO está no PATH (Windows):**
+```poPython 3.11+ instalado
+2. ✅ Poetry configurado
+3. ✅ Estrutura básica criada
+4. ✅ API funcionando
+5. ⏳ Implementar entidades do domínio
+6. ⏳ Implementar casos de uso do MVP
+7. ⏳ Configurar banco de dados e models
+8. ⏳ Integrar Evolution API
+9. ⏳ Implementar endpoints REST
+10. ⏳ Testes automatizados
 
-1. ✅ Estrutura básica criada
-2. ⏳ Implementar entidades do domínio
-3. ⏳ Implementar casos de uso do MVP
+## ⚠️ Importante
+
+- Nunca commitar o arquivo `.env` (já está no .gitignore)
+- Alterar as senhas padrão antes de ir para produção
+- Configurar CORS adequadamente para produção
+- Revisar configurações de segurança do Evolution API
+
+## 🔧 Troubleshooting
+
+### Poetry não encontrado após instalação
+```powershell
+# Adicionar ao PATH permanentemente
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:APPDATA\Python\Python311\Scripts", "User")
+# Fechar e reabrir PowerShell
+```
+
+### Erro ao criar virtualenv no Windows
+Se você instalou Python da Microsoft Store, desinstale e instale do python.org
+
+### Múltiplas versões do Python
+```powershell
+# Listar versões disponíveis
+py --list
+
+# Usar versão específica
+py -3.11 -m poetry install
+```
 4. ⏳ Configurar banco de dados e models
 5. ⏳ Integrar Evolution API
 6. ⏳ Implementar endpoints REST
