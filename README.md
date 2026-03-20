@@ -7,6 +7,41 @@ Sistema de gestão de mototáxi via bot de WhatsApp focado no trabalho colaborat
 Este software foi idealizado para modernizar o transporte por motocicletas em cidades do interior, substituindo as centrais analógicas por um fluxo digital justo. Diferente de grandes plataformas, o foco aqui é a emancipação do trabalhador, garantindo que a tecnologia seja uma ferramenta de apoio à categoria, e não apenas de extração de lucro.
 
 ## 🎯 Objetivo do MVP
+## 🗺️ Roadmap de Implementação (MVP)
+
+
+1. **Domínio e Casos de Uso**
+	- [x] Implementar entidades: Corrida, Motorista, Cliente, Central, Value Objects.
+	- [x] Definir interfaces de repositórios (ICorridaRepository, IMotoristaRepository, etc).
+	- [x] Implementar casos de uso: solicitar corrida, aceitar/recusar, concluir/cancelar, gerenciar fila, cadastrar motorista/cliente.
+
+2. **Infraestrutura**
+	- [ ] Criar models SQLAlchemy para entidades.
+	- [ ] Implementar repositórios concretos (banco de dados).
+	- [ ] Configurar conexão e migrations (Alembic).
+	- [ ] Implementar cliente Evolution API (envio/recebimento WhatsApp).
+	- [ ] Implementar cache de fila com Redis.
+	- [ ] Implementar serviço de geolocalização (geopy/PostGIS).
+
+3. **Apresentação (API)**
+	- [ ] Criar endpoints REST para corridas, motoristas, clientes.
+	- [ ] Implementar webhooks para integração Evolution API.
+	- [ ] Definir schemas Pydantic e handlers de mensagens.
+
+4. **Testes**
+	- [x] Testes unitários para entidades e casos de uso.
+	- [ ] Testes de integração para repositórios e API.
+	- [ ] Testes end-to-end para fluxo completo.
+
+5. **Configuração e DevOps**
+	- [ ] Ajustar .env e settings.py.
+	- [ ] Configurar logging.
+	- [ ] Garantir qualidade com Black, Ruff, mypy, pre-commit.
+
+6. **Validação**
+	- [ ] Testar fluxo completo: cliente solicita corrida → motorista aceita → corrida concluída.
+	- [ ] Validar integração WhatsApp (Evolution API).
+	- [ ] Validar persistência no banco e fila.
 
 **Funcionalidade Núcleo:** Cliente solicita corrida via WhatsApp → Sistema despacha para motorista disponível → Motorista aceita → Corrida realizada.
 

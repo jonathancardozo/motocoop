@@ -73,12 +73,10 @@ docker-compose up -d postgres redis evolution-api
 docker-compose ps
 ```
 
+
 ### 5. Inicializar Banco de Dados
 
-```powershell
-# Executar script de inicialização (quando implementado)
-poetry run python scripts/init_db.py
-```
+O banco de dados evolution será criado automaticamente pelo container do PostgreSQL/Evolution API. Não é necessário executar scripts de inicialização.
 
 ### 6. Executar a API
 
